@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Inventaris Barang</string>
+    <string name="movie_item_btn_favorite_desc">Save to favorites</string>
+</resources>
