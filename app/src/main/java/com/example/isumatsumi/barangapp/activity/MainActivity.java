@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnLogout;
     @BindView(R.id.btnLihatBarang)
     Button btnLihatBarang;
-
+    @BindView(R.id.btnLihatFavorit)
+    Button btnLihatFavorit;
     SharedPrefManager sharedPrefManager;
 
     @Override
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnLihatBarang.setOnClickListener(new View.OnClickListener() {
+        btnLihatFavorit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, FavoriteActivity.class));

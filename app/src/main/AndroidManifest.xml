@@ -23,6 +23,7 @@
         <activity android:name="com.example.isumatsumi.barangapp.activity.BarangActivity" />
         <activity android:name="com.example.isumatsumi.barangapp.activity.BarangDetailActivity" />
         <activity android:name="com.example.isumatsumi.barangapp.activity.TambahBarangActivity"></activity>
+        <activity android:name="com.example.isumatsumi.barangapp.activity.FavoriteActivity"></activity>
     </application>
 
 </manifest>

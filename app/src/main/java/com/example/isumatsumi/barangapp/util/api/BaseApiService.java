@@ -41,6 +41,7 @@ public interface BaseApiService {
     @GET("favorit")
     Call<ResponseFavorite> getFavorite();
 
+    @FormUrlEncoded
     @POST("favorit")
     Call<ResponseBody> simpanFavorite(@Field("nama_barang") String favnamabarang,
                                       @Field("jenis_barang") String favjenisbarang,

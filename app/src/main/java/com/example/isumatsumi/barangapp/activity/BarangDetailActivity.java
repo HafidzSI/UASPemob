@@ -43,6 +43,9 @@ public class BarangDetailActivity extends AppCompatActivity {
     Button btnHapus;
     @BindView(R.id.btnFavorit)
     Button btnFavorit;
+    @BindView(R.id.btnShare)
+    Button btnShare;
+
     ProgressDialog loading;
 
     String mId;
@@ -109,11 +112,21 @@ public class BarangDetailActivity extends AppCompatActivity {
                 requestSimpanFavorit();
             }
         });
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareintent = new Intent(Intent.ACTION_SEND);
+                shareintent.setType("text/plain");
+                shareintent.putExtra(Intent.EXTRA_SUBJECT, mNamaBarang);
+                shareintent.putExtra(Intent.EXTRA_TEXT, mJenis);
+                startActivity(Intent.createChooser(shareintent, "Bagikan dengan"));
+            }
+        });
     }
 
     private void requestSimpanFavorit(){
         loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
-        mApiService.simpanFavorite(tvNamaBarang.getText().toString(),tvJenis.getText().toString(), tvJumlah.getText().toString(), tvKondisi.getText().toString())
+        mApiService.simpanFavorite(mNamaBarang,mJenis,mJumlah,mKondisi)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

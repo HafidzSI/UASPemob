@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import com.example.isumatsumi.barangapp.R;
 import com.example.isumatsumi.barangapp.adapter.BarangAdapter;
+import com.example.isumatsumi.barangapp.adapter.FavoriteAdapter;
 import com.example.isumatsumi.barangapp.model.ResponseBarang;
+import com.example.isumatsumi.barangapp.model.ResponseFavorite;
 import com.example.isumatsumi.barangapp.model.SemuabarangItem;
+import com.example.isumatsumi.barangapp.model.SemuafavoritItem;
 import com.example.isumatsumi.barangapp.util.Constant;
 import com.example.isumatsumi.barangapp.util.RecyclerItemClickListener;
 import com.example.isumatsumi.barangapp.util.api.BaseApiService;
@@ -36,17 +39,17 @@ import retrofit2.Response;
  */
 
 public class FavoriteActivity extends AppCompatActivity{
-    @BindView(R.id.btnTambahBarang)
-    Button btnTambahBarang;
-    @BindView(R.id.tvBelumBarang)
-    TextView tvBelumBarang;
-    @BindView(R.id.rvBarang)
-    RecyclerView rvBarang;
+
+
+    @BindView(R.id.rvBarangFavorite)
+    RecyclerView rvBarangFavorite;
+    @BindView(R.id.tvBelumBarangFavorite)
+    TextView tvBelumBarangFavorite;
+    FavoriteAdapter favoriteAdapter;
     ProgressDialog loading;
 
     Context mContext;
-    List<SemuabarangItem> semuabarangItemList = new ArrayList<>();
-    BarangAdapter barangAdapter;
+    List<SemuafavoritItem> semuafavoritItemList = new ArrayList<>();
     BaseApiService mApiService;
 
     @Override
@@ -60,61 +63,55 @@ public class FavoriteActivity extends AppCompatActivity{
         mApiService = UtilsApi.getAPIService();
         mContext = this;
 
-        barangAdapter = new BarangAdapter(this, semuabarangItemList);
+        favoriteAdapter = new FavoriteAdapter(this, semuafavoritItemList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        rvBarang.setLayoutManager(mLayoutManager);
-        rvBarang.setItemAnimator(new DefaultItemAnimator());
+        rvBarangFavorite.setLayoutManager(mLayoutManager);
+        rvBarangFavorite.setItemAnimator(new DefaultItemAnimator());
 
-        getDataBarang();
-
-        btnTambahBarang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(FavoriteActivity.this, TambahBarangActivity.class));
-            }
-        });
+        getDataBarangFavorite();
     }
 
-    private void getDataBarang(){
+    public void getDataBarangFavorite()
+    {
         loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
 
-        mApiService.getSemuaBarang().enqueue(new Callback<ResponseBarang>() {
+        mApiService.getFavorite().enqueue(new Callback<ResponseFavorite>() {
             @Override
-            public void onResponse(Call<ResponseBarang> call, Response<ResponseBarang> response) {
+            public void onResponse(Call<ResponseFavorite> call, Response<ResponseFavorite> response) {
                 if (response.isSuccessful()) {
                     loading.dismiss();
                     if (response.body().isError()) {
-                        tvBelumBarang.setVisibility(View.VISIBLE);
+                        tvBelumBarangFavorite.setVisibility(View.VISIBLE);
                     } else {
-                        final List<SemuabarangItem> semuabarangItems = response.body().getSemuabarang();
-                        rvBarang.setAdapter(new BarangAdapter(mContext, semuabarangItems));
-                        barangAdapter.notifyDataSetChanged();
+                        final List<SemuafavoritItem> semuafavoritItems = response.body().getSemuafavorit();
+                        rvBarangFavorite.setAdapter(new FavoriteAdapter(mContext, semuafavoritItems));
+                        favoriteAdapter.notifyDataSetChanged();
 
-                        initDataIntent(semuabarangItems);
+                        initDataIntent(semuafavoritItems);
                     }
                 } else {
                     loading.dismiss();
-                    Toast.makeText(mContext, "Gagal mengambil data mata kuliah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Gagal mengambil data barang favorit", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBarang> call, Throwable t) {
+            public void onFailure(Call<ResponseFavorite> call, Throwable t) {
                 loading.dismiss();
                 Toast.makeText(mContext, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void initDataIntent(final List<SemuabarangItem> favoriteList){
-        rvBarang.addOnItemTouchListener(
+    private void initDataIntent(final List<SemuafavoritItem> barangFavoritList){
+        rvBarangFavorite.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        String id = favoriteList.get(position).getId();
-                        String namabarang = favoriteList.get(position).getNamaBarang();
-                        String jenis = favoriteList.get(position).getJenisBarang();
-                        String jumlah = favoriteList.get(position).getJumlah();
-                        String kondisi = favoriteList.get(position).getKondisi();
+                        String id = barangFavoritList.get(position).getId();
+                        String namabarang = barangFavoritList.get(position).getNamaBarang();
+                        String jenis = barangFavoritList.get(position).getJenisBarang();
+                        String jumlah = barangFavoritList.get(position).getJumlah();
+                        String kondisi = barangFavoritList.get(position).getKondisi();
 
                         Intent detailBarang = new Intent(mContext, BarangDetailActivity.class);
                         detailBarang.putExtra(Constant.KEY_ID_BARANG, id);
@@ -126,5 +123,4 @@ public class FavoriteActivity extends AppCompatActivity{
                     }
                 }));
     }
-
 }

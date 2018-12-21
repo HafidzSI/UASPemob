@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.isumatsumi.barangapp.R;
 import com.example.isumatsumi.barangapp.adapter.BarangAdapter;
+import com.example.isumatsumi.barangapp.helper.DbHelper;
+import com.example.isumatsumi.barangapp.model.Data;
 import com.example.isumatsumi.barangapp.model.ResponseBarang;
 import com.example.isumatsumi.barangapp.model.SemuabarangItem;
 import com.example.isumatsumi.barangapp.util.Constant;
@@ -23,6 +25,7 @@ import com.example.isumatsumi.barangapp.util.api.BaseApiService;
 import com.example.isumatsumi.barangapp.util.api.UtilsApi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,9 +40,18 @@ public class BarangActivity extends AppCompatActivity {
     Button btnTambahBarang;
     @BindView(R.id.tvBelumBarang)
     TextView tvBelumBarang;
+    @BindView(R.id.btnRefresh)
+    Button btnRefresh;
     @BindView(R.id.rvBarang)
     RecyclerView rvBarang;
     ProgressDialog loading;
+    DbHelper SQLite = new DbHelper(this);
+
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_NAMA_BARANG = "nama_barang";
+    public static final String COLUMN_JENIS_BARANG = "jenis_barang";
+    public static final String COLUMN_JUMLAH = "jumlah";
+    public static final String COLUMN_KONDISI = "kondisi";
 
     Context mContext;
     List<SemuabarangItem> semuabarangItemList = new ArrayList<>();
@@ -70,6 +82,13 @@ public class BarangActivity extends AppCompatActivity {
                 startActivity(new Intent(BarangActivity.this, TambahBarangActivity.class));
             }
         });
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(BarangActivity.this, BarangActivity.class));
+            }
+        });
     }
 
     private void getDataBarang(){
@@ -91,7 +110,7 @@ public class BarangActivity extends AppCompatActivity {
                     }
                 } else {
                     loading.dismiss();
-                    Toast.makeText(mContext, "Gagal mengambil data mata kuliah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Gagal mengambil data", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -107,6 +126,7 @@ public class BarangActivity extends AppCompatActivity {
         rvBarang.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
+
                         String id = barangList.get(position).getId();
                         String namabarang = barangList.get(position).getNamaBarang();
                         String jenis = barangList.get(position).getJenisBarang();

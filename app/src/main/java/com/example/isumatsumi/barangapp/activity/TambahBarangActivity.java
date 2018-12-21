@@ -10,8 +10,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.isumatsumi.barangapp.R;
+import com.example.isumatsumi.barangapp.helper.DbHelper;
 import com.example.isumatsumi.barangapp.util.api.BaseApiService;
 import com.example.isumatsumi.barangapp.util.api.UtilsApi;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +40,7 @@ public class TambahBarangActivity extends AppCompatActivity {
 
     BaseApiService mApiService;
     Context mContext;
+    DbHelper SQLite = new DbHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
